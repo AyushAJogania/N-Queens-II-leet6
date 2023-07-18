@@ -1,0 +1,60 @@
+#include <vector>
+
+class Solution {
+public:
+    int totalNQueens(int n) {
+        int count = 0;
+        std::vector<std::string> board(n, std::string(n, '.')); // Initialize the chessboard with empty cells
+
+        solveNQueens(board, 0, count); // Start solving the puzzle from the first row
+
+        return count;
+    }
+
+private:
+    void solveNQueens(std::vector<std::string>& board, int row, int& count) {
+        int n = board.size();
+
+        // Base case: If we have reached the last row, we have found a valid solution
+        if (row == n) {
+            count++;
+            return;
+        }
+
+        // Try placing a queen in each column of the current row
+        for (int col = 0; col < n; ++col) {
+            if (isValid(board, row, col)) {
+                board[row][col] = 'Q'; // Place the queen at (row, col)
+                solveNQueens(board, row + 1, count); // Move to the next row
+                board[row][col] = '.'; // Remove the queen for backtracking
+            }
+        }
+    }
+
+    bool isValid(const std::vector<std::string>& board, int row, int col) {
+        int n = board.size();
+
+        // Check if there is any queen in the same column
+        for (int i = 0; i < row; ++i) {
+            if (board[i][col] == 'Q') {
+                return false;
+            }
+        }
+
+        // Check if there is any queen in the upper left diagonal
+        for (int i = row - 1, j = col - 1; i >= 0 && j >= 0; --i, --j) {
+            if (board[i][j] == 'Q') {
+                return false;
+            }
+        }
+
+        // Check if there is any queen in the upper right diagonal
+        for (int i = row - 1, j = col + 1; i >= 0 && j < n; --i, ++j) {
+            if (board[i][j] == 'Q') {
+                return false;
+            }
+        }
+
+        return true; // If no conflicts, the current position is valid
+    }
+};
